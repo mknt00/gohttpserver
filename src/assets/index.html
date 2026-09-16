@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#4f6ef7">
+  <title>[[.Title]]</title>
+  <link rel="shortcut icon" type="image/png" href="[[.Prefix]]/-/assets/favicon.png" />
+  <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/[["assets/css/style.css" | urlhash ]]">
+  <link rel="stylesheet" type="text/css" id="theme-style" href="[[.Prefix]]/-/[["assets/css/themes/ocean.css" | urlhash ]]">
+  <link rel="stylesheet" type="text/css" id="dark-mode-style" href="">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="[[.Prefix]]/">
+        <span class="logo">📁</span> [[.Title]]
+      </a>
+      [[if not .NoIndex ]]
+      <div class="nav-search">
+        <input type="text" id="search-input" placeholder="Search files… (glob: name, -name to exclude)" autocomplete="off">
+      </div>
+      [[end]]
+      <div class="nav-actions">
+        <button class="nav-btn" id="view-toggle" title="Toggle grid / list view">
+          <span id="view-icon">⊞</span>
+        </button>
+        <button class="nav-btn" id="dark-toggle" title="Toggle dark mode">
+          <span id="dark-icon">🌙</span>
+        </button>
+        <div class="theme-picker">
+          <button class="nav-btn" id="theme-btn" title="Theme"><span>🎨</span></button>
+          <div class="theme-menu" id="theme-menu"></div>
+        </div>
+        <button class="nav-btn" id="upload-btn" title="Upload (Ctrl+U)" v-show="auth.upload">
+          <span>⬆</span> <span class="btn-label">Upload</span>
+        </button>
+        [[if eq .AuthType "openid"]]
+        <template v-if="!user.email">
+          <a href="/-/login" class="nav-btn">Sign in</a>
+        </template>
+        <template v-else>
+          <a href="/-/logout" class="nav-btn"><span v-text="user.name"></span> ⎋</a>
+        </template>
+        [[end]]
+        [[if eq .AuthType "oauth2-proxy"]]
+        <template v-if="!user.email">
+          <span class="nav-btn">Guest</span>
+        </template>
+        <template v-else>
+          <a href="/-/logout" class="nav-btn"><span v-text="user.name"></span> ⎋</a>
+        </template>
+        [[end]]
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb" id="breadcrumb"></ol>
+
+    <!-- Toolbar -->
+    <div class="toolbar" id="toolbar">
+      <button class="btn btn-sm" id="btn-back" title="Back">← Back</button>
+      <button class="btn btn-sm" id="btn-hidden" title="Toggle hidden files">
+        Hidden <span id="hidden-icon">👁‍🗨</span>
+      </button>
+      <button class="btn btn-sm" id="btn-newfolder" v-show="auth.delete" title="New folder">📁 New</button>
+      <span class="spacer"></span>
+      <span id="selection-info" style="display:none">
+        <span class="selection-badge" id="sel-count">0</span> selected
+        <button class="btn btn-sm" id="sel-delete" v-show="auth.delete">Delete</button>
+        <button class="btn btn-sm" id="sel-archive">Zip</button>
+        <button class="btn btn-sm" id="sel-clear">Clear</button>
+      </span>
+    </div>
+
+    <!-- File grid / list -->
+    <div id="file-view"></div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="es-icon">📂</div>
+      <p>This folder is empty.</p>
+    </div>
+
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    window.URL_PREFIX = "[[.Prefix]]";
+    window.AUTH_TYPE = "[[.AuthType]]";
+  </script>
+  <script type="module" src="[[.Prefix]]/-/[["assets/js/app.js" | urlhash ]]"></script>
+</body>
+
+</html>

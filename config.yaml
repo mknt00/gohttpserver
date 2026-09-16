@@ -1,0 +1,31 @@
+# gohttpserver 配置文件
+# 启动: ./gohttpserver --conf config.yaml
+
+# 监听端口 11080
+addr: ""
+port: 11080
+
+# 分享的根目录(改为你要分享的绝对路径)
+root: "/home/frank/Downloads"
+
+# 标题与主题(green / black)
+title: "Go HTTP File Server"
+theme: green
+
+# TLS 证书;都填上才启用 https
+cert: ""
+key: ""
+
+# 功能开关
+upload: true
+delete: true
+xheaders: false
+debug: false
+no-index: false
+deep-path-max-depth: -1
+
+# 认证:HTTP Basic,账号 admin / 密码 admin
+auth:
+  type: http
+  http:
+    - admin:admin

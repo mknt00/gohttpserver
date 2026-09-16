@@ -1,0 +1,37 @@
+/* Dark — dark mode, works standalone */
+:root {
+	--accent: #60a5fa;
+	--accent-2: #a78bfa;
+	--bg: #0f172a;
+	--surface: #1e293b;
+	--surface-2: #273449;
+	--border: #334155;
+	--text: #e2e8f0;
+	--text-muted: #94a3b8;
+	--shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	--shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+	--nav-bg: linear-gradient(135deg, #1e293b, #334155);
+	--nav-text: #e2e8f0;
+	--nav-text-muted: #94a3b8;
+	--c-dir: #fbbf24;
+	--c-code: #60a5fa;
+	--c-image: #34d399;
+	--c-audio: #a78bfa;
+	--c-video: #f472b6;
+	--c-archive: #fb923c;
+	--c-pdf: #f87171;
+	--c-text: #94a3b8;
+}
+
+/* Dark-specific tweaks for readability */
+.markdown-body pre, .markdown-body code {
+	background: var(--surface-2);
+}
+
+.code-lines {
+	background: var(--surface-2);
+}
+
+.upload-item {
+	background: var(--surface-2);
+}

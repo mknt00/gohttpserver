@@ -1,0 +1,22 @@
+/* Sunset — warm orange/pink */
+:root {
+	--accent: #f97316;
+	--accent-2: #ec4899;
+	--bg: #fff7ed;
+	--surface: #ffffff;
+	--surface-2: #ffedd5;
+	--border: #fed7aa;
+	--text: #2b1708;
+	--text-muted: #9a6538;
+	--shadow: 0 2px 8px rgba(150, 70, 20, 0.08);
+	--shadow-lg: 0 12px 32px rgba(150, 70, 20, 0.15);
+	--nav-bg: linear-gradient(135deg, #f97316, #ec4899);
+	--c-dir: #f59e0b;
+	--c-code: #ec4899;
+	--c-image: #10b981;
+	--c-audio: #8b5cf6;
+	--c-video: #ef4444;
+	--c-archive: #f97316;
+	--c-pdf: #dc2626;
+	--c-text: #9a6538;
+}

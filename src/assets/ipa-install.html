@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>[[.Name]] install</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/png" href="/-/assets/favicon.png" />
+  <link rel="stylesheet" type="text/css" href="/-/assets/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/-/assets/css/themes/ocean.css">
+  <style>
+    .install-wrap { max-width: 560px; margin: 60px auto; padding: 0 20px; text-align: center; }
+    .install-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 40px 28px; }
+    .install-icon { font-size: 56px; margin-bottom: 16px; }
+    .install-card h2 { margin: 0 0 8px; font-size: 22px; }
+    .install-card p { color: var(--text-muted); margin: 0 0 20px; }
+    .install-btn { display: inline-block; padding: 14px 32px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; text-decoration: none; }
+    .install-btn:hover { filter: brightness(1.1); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="install-wrap">
+    <div class="install-card">
+      <div class="install-icon">🍎</div>
+      <h2>[[.Name]]</h2>
+      <div id="browser" style="display:none"><p>This is an IPA install page. Open this link on your iPhone.</p></div>
+      <div id="safari" style="display:none"><p>Tap below to install:</p>
+        <a class="install-btn" id="itms-link" href="#">Install App</a>
+      </div>
+      <div id="android" style="display:none"><p>This install page is for iOS, not Android.</p></div>
+    </div>
+  </div>
+  <script>
+    function showById(name) { document.getElementById(name).style.display = 'block'; }
+    (function () {
+      var ua = navigator.userAgent.toLowerCase();
+      var plistLink = "[[.PlistLink]]";
+      var ipaInstallLink = 'itms-services://?action=download-manifest&url=' + plistLink;
+      document.getElementById('itms-link').href = ipaInstallLink;
+      if (/micromessenger/.test(ua)) {
+        showById('safari'); location.href = ipaInstallLink;
+      } else if (/android/.test(ua)) {
+        showById('android');
+      } else if (/iphone|ipad|ipod/.test(ua)) {
+        showById('safari'); location.href = ipaInstallLink;
+      } else {
+        showById('browser');
+      }
+    })();
+  </script>
+</body>
+</html>

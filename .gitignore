@@ -1,0 +1,7 @@
+# Compiled binaries (build with release/build.sh instead of committing them)
+/release/gohttpserver
+/release/gohttpserver-*
+/release/gohttpserver-static
+
+# Local tooling / IDE
+.claude/
