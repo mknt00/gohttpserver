@@ -121,9 +121,13 @@ gohttpserver --conf config.yml
 addr: ":4000"
 title: "我的文件服务器"
 theme: ocean
-upload: true
-delete: true
+upload: false      # 默认只读（guest）
+delete: false
 xheaders: true
+users:             # 按用户放开权限（Basic auth 用 username，OpenID 用 email）
+  - username: admin
+    upload: true
+    delete: true
 ```
 
 ---
@@ -356,18 +360,42 @@ gohttpserver --auth-type oauth2-proxy
 
 ## 访问控制 (.ghs.yml)
 
-在子目录中创建 `.ghs.yml` 文件，可覆盖该目录及子目录的权限：
+在子目录中创建 `.ghs.yml` 文件，可覆盖该目录及子目录的权限；也可以直接在主配置文件中写全局 `users` 列表（对所有目录生效，子目录 `.ghs.yml` 中的 `users` 会覆盖之）。`users` 条目按认证方式匹配：Basic auth 用 `username`，OpenID 用 `email`：
 
 ```yaml
 ---
-upload: false
+upload: false      # 默认权限：未匹配到 users 规则的用户只读
 delete: false
 users:
+  - username: "admin"        # auth.type 为 http 时，按 Basic auth 用户名匹配
+    upload: true
+    delete: true
+  # auth.type 为 openid 时，按登录邮箱匹配：
   - email: "admin@example.com"
     delete: true
     upload: true
-    token: mysecrettoken123
+    token: mysecrettoken123  # 可选：脚本/API 上传通道，请求带 ?token= 参数（仅作用于 upload）
 ```
+
+### 按用户名区分权限（Basic auth）
+
+主配置 `auth.type: http` 时，`users[].username` 对应 `auth.http` 列表中的用户名，可为每个账号单独设置上传/删除权限，未列出的账号按全局 `upload`/`delete` 生效。典型用法——全局只读（guest），管理员例外：
+
+```yaml
+upload: false
+delete: false
+auth:
+  type: http
+  http:
+    - admin:admin1234
+    - guest:guest123
+users:
+  - username: admin
+    upload: true
+    delete: true
+```
+
+此时 `guest` 登录只能浏览和下载（页面上也不显示上传/删除按钮），`admin` 拥有完整的上传、编辑、重命名、复制、移动、删除权限。权限由服务端强制执行，直接调 API 也会被 403 拦截。
 
 ### 隐藏 / 显示特定文件
 
@@ -517,9 +545,7 @@ GET /path/to/dir/?json=true&search=keyword
   ],
   "auth": {
     "upload": true,
-    "delete": true,
-    "users": null,
-    "AccessTables": null
+    "delete": true
   }
 }
 ```
@@ -682,8 +708,8 @@ A: 默认已隐藏。点击工具栏 **Hidden** 按钮可切换显示。
 **Q: 上传文件大小有限制吗？**
 A: 默认无限制。如使用 nginx，请设置 `client_max_body_size 0`。
 
-**Q: 如何只允许特定用户上传？**
-A: 在目录中创建 `.ghs.yml`，配置 `users` 列表并指定 `token`，上传时携带 `token` 参数。
+**Q: 如何只允许特定用户上传/删除（比如其他人只能看和下载）？**
+A: 全局设 `upload: false`、`delete: false`，再用 `users` 列表按用户放开：Basic auth 下写 `username`，OpenID 下写 `email`；纯 API 场景也可给用户发 `token`（上传请求带 `?token=` 参数）。见[访问控制](#访问控制-ghsyml)。
 
 **Q: 支持中文文件名吗？**
 A: 完全支持，包括中文路径和中文搜索。

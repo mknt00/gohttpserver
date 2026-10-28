@@ -50,8 +50,9 @@ type Configure struct {
 		ID     string   `yaml:"id"`     // for oauth2
 		Secret string   `yaml:"secret"` // for oauth2
 	} `yaml:"auth"`
-	DeepPathMaxDepth int  `yaml:"deep-path-max-depth"`
-	NoIndex          bool `yaml:"no-index"`
+	Users            []UserControl `yaml:"users"` // per-user upload/delete rules (matched by basic-auth username or openid email)
+	DeepPathMaxDepth int           `yaml:"deep-path-max-depth"`
+	NoIndex          bool          `yaml:"no-index"`
 }
 
 type httpLogger struct{}
@@ -212,6 +213,7 @@ func main() {
 	ss.GoogleTrackerID = gcfg.GoogleTrackerID
 	ss.Upload = gcfg.Upload
 	ss.Delete = gcfg.Delete
+	ss.Users = gcfg.Users
 	ss.AuthType = gcfg.Auth.Type
 	ss.DeepPathMaxDepth = gcfg.DeepPathMaxDepth
 

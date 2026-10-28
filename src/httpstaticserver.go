@@ -60,6 +60,7 @@ type HTTPStaticServer struct {
 	Prefix           string
 	Upload           bool
 	Delete           bool
+	Users            []UserControl // global per-user rules from main config
 	Title            string
 	Theme            string
 	PlistProxy       string
@@ -181,7 +182,7 @@ func (s *HTTPStaticServer) hIndex(w http.ResponseWriter, r *http.Request) {
 	} else {
 		if filepath.Base(path) == YAMLCONF {
 			auth := s.readAccessConf(realPath)
-			if !auth.Delete {
+			if !auth.canDelete(r) {
 				http.Error(w, "Security warning, not allowed to read", http.StatusForbidden)
 				return
 			}
@@ -712,18 +713,19 @@ type AccessTable struct {
 }
 
 type UserControl struct {
-	Email string
-	// Access bool
-	Upload bool
-	Delete bool
-	Token  string
+	Username string `yaml:"username"` // basic auth username (used when auth-type is http)
+	Email    string `yaml:"email"`    // openid session email
+	Upload   bool   `yaml:"upload"`
+	Delete   bool   `yaml:"delete"`
+	Token    string `yaml:"token" json:"-"`
 }
 
 type AccessConf struct {
+	AuthType     string        `yaml:"-" json:"-"` // set at runtime from server config, not from .ghs.yml
 	Upload       bool          `yaml:"upload" json:"upload"`
 	Delete       bool          `yaml:"delete" json:"delete"`
-	Users        []UserControl `yaml:"users" json:"users"`
-	AccessTables []AccessTable `yaml:"accessTables"`
+	Users        []UserControl `yaml:"users" json:"-"`
+	AccessTables []AccessTable `yaml:"accessTables" json:"-"`
 }
 
 var reCache = make(map[string]*regexp.Regexp)
@@ -746,22 +748,48 @@ func (c *AccessConf) canAccess(fileName string) bool {
 	return true
 }
 
-func (c *AccessConf) canDelete(r *http.Request) bool {
+// currentUser returns the identity string used to match Users rules.
+// For basic-auth (auth-type http) it is the login username; for openid it is
+// the session email. Returns "" when the identity cannot be determined.
+func (c *AccessConf) currentUser(r *http.Request) string {
+	if c.AuthType == "http" {
+		if user, _, ok := r.BasicAuth(); ok {
+			return user
+		}
+		return ""
+	}
 	session, err := store.Get(r, defaultSessionName)
 	if err != nil {
-		return c.Delete
+		return ""
 	}
 	val := session.Values["user"]
 	if val == nil {
+		return ""
+	}
+	if userInfo, ok := val.(*UserInfo); ok {
+		return userInfo.Email
+	}
+	return ""
+}
+
+func (c *AccessConf) canDelete(r *http.Request) bool {
+	name := c.currentUser(r)
+	if name == "" {
 		return c.Delete
 	}
-	userInfo := val.(*UserInfo)
 	for _, rule := range c.Users {
-		if rule.Email == userInfo.Email {
+		if c.matchUser(rule, name) {
 			return rule.Delete
 		}
 	}
 	return c.Delete
+}
+
+func (c *AccessConf) matchUser(rule UserControl, name string) bool {
+	if c.AuthType == "http" {
+		return rule.Username != "" && rule.Username == name
+	}
+	return rule.Email != "" && rule.Email == name
 }
 
 func (c *AccessConf) canUploadByToken(token string) bool {
@@ -778,18 +806,12 @@ func (c *AccessConf) canUpload(r *http.Request) bool {
 	if token != "" {
 		return c.canUploadByToken(token)
 	}
-	session, err := store.Get(r, defaultSessionName)
-	if err != nil {
+	name := c.currentUser(r)
+	if name == "" {
 		return c.Upload
 	}
-	val := session.Values["user"]
-	if val == nil {
-		return c.Upload
-	}
-	userInfo := val.(*UserInfo)
-
 	for _, rule := range c.Users {
-		if rule.Email == userInfo.Email {
+		if c.matchUser(rule, name) {
 			return rule.Upload
 		}
 	}
@@ -944,8 +966,10 @@ func (s *HTTPStaticServer) findIndex(text string) []IndexFileItem {
 
 func (s *HTTPStaticServer) defaultAccessConf() AccessConf {
 	return AccessConf{
-		Upload: s.Upload,
-		Delete: s.Delete,
+		AuthType: s.AuthType,
+		Upload:   s.Upload,
+		Delete:   s.Delete,
+		Users:    s.Users,
 	}
 }
 

@@ -1,31 +1,60 @@
+# ============================================================
 # gohttpserver 配置文件
 # 启动: ./gohttpserver --conf config.yaml
+# 说明: 命令行参数优先级高于本文件;改完需重启生效
+# ============================================================
 
-# 监听端口 11080
+# ---------- 网络 ----------
+# 监听地址:留空 = 监听所有网卡(局域网可访问);只给本机用可填 "127.0.0.1"
 addr: ""
+# 监听端口(addr 留空时生效;两者都空默认 :8000)
 port: 11080
 
-# 分享的根目录(改为你要分享的绝对路径)
+# ---------- 站点 ----------
+# 分享的根目录(Linux 绝对路径,按需修改)
 root: "/home/frank/Downloads"
-
-# 标题与主题(green / black)
+# 浏览器标题
 title: "Go HTTP File Server"
+# 主题: green / black / ocean / sunset / forest / dark
 theme: green
+# URL 前缀,例如 "/files" 则通过 http://host:11080/files/ 访问;留空为根路径
+prefix: ""
 
-# TLS 证书;都填上才启用 https
+# ---------- TLS(HTTPS) ----------
+# cert 和 key 都填上才启用 https;局域网 http 部署可留空
 cert: ""
 key: ""
 
-# 功能开关
-upload: true
-delete: true
-xheaders: false
-debug: false
-no-index: false
-deep-path-max-depth: -1
+# ---------- 全局默认权限(guest 策略) ----------
+# 未在下方 users 中列出的用户按这两项生效
+# false = 只能浏览和下载(页面上不显示上传/删除按钮,API 层也强制 403)
+upload: false
+delete: false
 
-# 认证:HTTP Basic,账号 admin / 密码 admin
+# ---------- 认证:HTTP Basic ----------
+# 格式 user:pass,一行一个;登录弹窗输入后即按 users 规则区分权限
 auth:
   type: http
   http:
-    - admin:admin
+    - admin:admin1234      # 管理员(务必改成自己的强密码)
+    - guest:guest123       # 访客:只能看和下载
+
+# ---------- 按用户授权 ----------
+# username 对应上面 auth.http 里的用户名;auth.type 为 openid 时改用 email 字段
+# 未列出的用户(如 guest)继承全局 upload/delete = false,即纯只读
+users:
+  - username: admin
+    upload: true           # 可上传、新建文件夹、编辑、复制、移动
+    delete: true           # 可删除、重命名
+  # 可选:给脚本/API 发独立上传通道(仅 upload,不授 delete)
+  # 用法: curl -F "file=@x.zip" "http://host:11080/-/upload/?token=下面的token"
+  # - token: "change-me-to-a-long-random-string"
+  #   upload: true
+
+# ---------- 其他 ----------
+xheaders: false            # 部署在 nginx 反代之后时设 true(取 X-Forwarded-* 头)
+debug: false               # true 时启动打印完整配置(含密码,调试完记得关)
+no-index: false            # true 禁用搜索索引(大目录省内存,但搜索不可用)
+deep-path-max-depth: -1    # -1 = 不合并连续空目录;>=0 合并显示(如 a/b/c 一行)
+google-tracker-id: ""      # 留空禁用 Google Analytics
+plistproxy: ""             # iOS ipa 安装代理;留空禁用
