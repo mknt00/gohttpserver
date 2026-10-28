@@ -19,7 +19,7 @@ import (
 	"text/template"
 
 	"github.com/alecthomas/kingpin"
-	accesslog "github.com/codeskyblue/go-accesslog"
+	accesslog "github.com/mknt00/go-accesslog"
 	"github.com/go-yaml/yaml"
 	"github.com/goji/httpauth"
 	"github.com/gorilla/handlers"
@@ -70,7 +70,7 @@ var (
 	VERSION   = "unknown"
 	BUILDTIME = "unknown time"
 	GITCOMMIT = "unknown git commit"
-	SITE      = "https://github.com/codeskyblue/gohttpserver"
+	SITE      = "https://github.com/mknt00/gohttpserver"
 )
 
 func versionMessage() string {

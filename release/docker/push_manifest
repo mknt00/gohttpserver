@@ -15,14 +15,14 @@ then
 	sed -i '1a"experimental": "enabled",' $HOME/.docker/config.json
 fi
 
-docker manifest create codeskyblue/gohttpserver \
-  codeskyblue/gohttpserver:latest \
-  codeskyblue/gohttpserver:armhf
-docker manifest annotate codeskyblue/gohttpserver \
-  codeskyblue/gohttpserver:latest --os linux --arch amd64
-docker manifest annotate codeskyblue/gohttpserver \
-  codeskyblue/gohttpserver:armhf --os linux --arch arm --variant v7
-docker manifest push codeskyblue/gohttpserver
+docker manifest create mknt00/gohttpserver \
+  mknt00/gohttpserver:latest \
+  mknt00/gohttpserver:armhf
+docker manifest annotate mknt00/gohttpserver \
+  mknt00/gohttpserver:latest --os linux --arch amd64
+docker manifest annotate mknt00/gohttpserver \
+  mknt00/gohttpserver:armhf --os linux --arch arm --variant v7
+docker manifest push mknt00/gohttpserver
 
 # check again
-docker run mplatform/mquery codeskyblue/gohttpserver
+docker run mplatform/mquery mknt00/gohttpserver

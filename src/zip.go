@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	dkignore "github.com/codeskyblue/dockerignore"
+	dkignore "github.com/mknt00/dockerignore"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 

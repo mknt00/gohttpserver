@@ -57,7 +57,7 @@
 
 ```bash
 # 安装
-go install github.com/codeskyblue/gohttpserver@latest
+go install github.com/mknt00/gohttpserver@latest
 
 # 共享当前目录，监听 8000 端口，开启上传
 gohttpserver -r ./ --port 8000 --upload
@@ -73,18 +73,18 @@ gohttpserver -r ./ --port 8000 --upload
 ### 方式一：go install（推荐）
 
 ```bash
-go install github.com/codeskyblue/gohttpserver@latest
+go install github.com/mknt00/gohttpserver@latest
 gohttpserver --help
 ```
 
 ### 方式二：下载二进制
 
-从 [GitHub Releases](https://github.com/codeskyblue/gohttpserver/releases) 下载对应平台的二进制文件。
+从 [GitHub Releases](https://github.com/mknt00/gohttpserver/releases) 下载对应平台的二进制文件。
 
 ### 方式三：Mac Homebrew
 
 ```bash
-brew install codeskyblue/tap/gohttpserver
+brew install mknt00/tap/gohttpserver
 ```
 
 ### 常用启动参数
@@ -137,18 +137,18 @@ users:             # 按用户放开权限（Basic auth 用 username，OpenID �
 ```bash
 # 共享当前目录
 docker run -it --rm -p 8000:8000 -v $PWD:/app/public \
-  codeskyblue/gohttpserver
+  mknt00/gohttpserver
 
 # 带认证
 docker run -it --rm -p 8000:8000 -v $PWD:/app/public \
-  codeskyblue/gohttpserver \
+  mknt00/gohttpserver \
   --auth-type http --auth-http admin:secret
 ```
 
 构建镜像：
 
 ```bash
-docker build -t codeskyblue/gohttpserver -f docker/Dockerfile .
+docker build -t mknt00/gohttpserver -f docker/Dockerfile .
 ```
 
 ---

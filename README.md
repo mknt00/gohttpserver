@@ -37,11 +37,11 @@ gohttpserver -r ./ --port 8000 --upload --delete
 
 ```bash
 # From source
-go install github.com/codeskyblue/gohttpserver@latest
+go install github.com/mknt00/gohttpserver@latest
 
 # Or download a prebuilt binary from the Releases page.
 # Or on macOS:
-brew install codeskyblue/tap/gohttpserver
+brew install mknt00/tap/gohttpserver
 ```
 
 ### Common flags

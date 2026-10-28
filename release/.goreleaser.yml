@@ -27,6 +27,6 @@ archives:
 
 # brews:
 #   - tap:
-#       owner: codeskyblue
+#       owner: mknt00
 #       name: homebrew-tap
 #     folder: Formula

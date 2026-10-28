@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	openid "github.com/codeskyblue/openid-go"
+	openid "github.com/mknt00/openid-go"
 	"github.com/gorilla/sessions"
 )
 

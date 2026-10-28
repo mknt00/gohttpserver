@@ -1,12 +1,12 @@
-module github.com/codeskyblue/gohttpserver
+module github.com/mknt00/gohttpserver
 
 go 1.23.0
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/codeskyblue/dockerignore v0.0.0-20151214070507-de82dee623d9
-	github.com/codeskyblue/go-accesslog v0.0.0-20171215023101-6188d3bd9371
-	github.com/codeskyblue/openid-go v0.0.0-20160923065855-0d30842b2fb4
+	github.com/mknt00/dockerignore v0.0.0-20151214070507-de82dee623d9
+	github.com/mknt00/go-accesslog v0.0.0-20171215023101-6188d3bd9371
+	github.com/mknt00/openid-go v0.0.0-20160923065855-0d30842b2fb4
 	github.com/fork2fix/go-plist v0.0.0-20181126021357-36960be5e636
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/goji/httpauth v0.0.0-20160601135302-2da839ab0f4d
